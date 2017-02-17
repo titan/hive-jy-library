@@ -1,0 +1,19 @@
+{
+  "name": "ztyq-library",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@git.fengchaohuzhu.com:10080/server/jy-library"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/bunyan": "0.0.34",
+    "hive-verify": "git+http://git.fengchaohuzhu.com:10080/feiluo/hive-verify.git"
+  }
+}
