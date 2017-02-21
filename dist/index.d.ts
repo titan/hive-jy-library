@@ -24,4 +24,4 @@ export interface CarModel {
 export interface Option {
     log: Logger;
 }
-export declare function getCarModelByFrameNo(frameNo: string, options?: Option): Promise<any>;
+export declare function getCarModelByVin(vin: string, options?: Option): Promise<any>;
