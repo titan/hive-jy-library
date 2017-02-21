@@ -34,26 +34,26 @@ export interface Option {
 }
 
 // 查询车型信息
-export async function getCarModelByFrameNo(
-  frameNo: string, // 车架号(VIN)
+export async function getCarModelByVin(
+  vin: string, // 车架号(VIN)
   options?: Option // 可选参数
 ): Promise<any> {
   const sn = crypto.randomBytes(64).toString("base64");
-  logInfo(options, `sn: ${sn}, getCarModelByFrameNo => RequestTime: ${new Date()}, requestData: { frameNo: ${frameNo} }`);
+  logInfo(options, `sn: ${sn}, getCarModelByVin => RequestTime: ${new Date()}, requestData: { vin: ${vin} }`);
   if (!verify([
-    stringVerifier("frameNo", frameNo),
+    stringVerifier("vin", vin),
   ], (errors: string[]) => {
     return Promise.reject({
       code: 403,
-      msg: errors.join("\n")
+      message: errors.join("\n")
     });
   })) {
     // return;
   }
   return new Promise((resolve, reject) => {
-    const getCarModelByFrameNoTimeString: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
+    const getCarModelByVinTimeString: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
     const requestData = {
-      "vinCode": frameNo
+      "vinCode": vin
     };
     const req = {
       "channelType": "00",
@@ -63,32 +63,32 @@ export async function getCarModelByFrameNo(
       "dtype": "json",
       "operatorPwd": "2fa392325f0fc080a7131a30a57ad4d3"
     };
-    const getCarModelByFrameNoPostData: string = JSON.stringify(req);
-    logInfo(options, `sn: ${sn}, getCarModelByFrameNo => getCarModelByFrameNoPostData: ${getCarModelByFrameNoPostData}`);
+    const getCarModelByVinPostData: string = JSON.stringify(req);
+    logInfo(options, `sn: ${sn}, getCarModelByVin => getCarModelByVinPostData: ${getCarModelByVinPostData}`);
     let jyhost: string = "www.jy-epc.com";
     let hostport: number = 80;
     let hostpath: string = "/api-show/NqAfterMarketDataServlet";
-    const getCarModelByFrameNoOptions = {
+    const getCarModelByVinOptions = {
       "hostname": jyhost,
       "port": hostport,
       "method": "POST",
       "path": hostpath,
       "headers": {
         "Content-Type": "application/x-json",
-        "Content-Length": Buffer.byteLength(getCarModelByFrameNoPostData)
+        "Content-Length": Buffer.byteLength(getCarModelByVinPostData)
       }
     };
-    const getCarModelByFrameNoReq = http.request(getCarModelByFrameNoOptions, function (res) {
-      logInfo(options, `sn: ${sn}, getCarModelByFrameNo => getCarModelByFrameNoReq status: ${res.statusCode}`);
+    const getCarModelByVinReq = http.request(getCarModelByVinOptions, function (res) {
+      logInfo(options, `sn: ${sn}, getCarModelByVin => getCarModelByVinReq status: ${res.statusCode}`);
       res.setEncoding("utf8");
-      let getCarModelByFrameNoResult: string = "";
+      let getCarModelByVinResult: string = "";
       res.on("data", (body) => {
-        getCarModelByFrameNoResult += body;
+        getCarModelByVinResult += body;
       });
       res.on("end", () => {
-        logInfo(options, `sn: ${sn}, getCarModelByFrameNo => End of getCarModelByFrameNoReq`);
-        const repData = JSON.parse(getCarModelByFrameNoResult);
-        logInfo(options, `sn: ${sn}, getCarModelByFrameNo => ReplyTime: ${new Date()} , getCarModelByFrameNoResult: ${JSON.stringify(getCarModelByFrameNoResult)}`);
+        logInfo(options, `sn: ${sn}, getCarModelByVin => End of getCarModelByVinReq`);
+        const repData = JSON.parse(getCarModelByVinResult);
+        logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${JSON.stringify(getCarModelByVinResult)}`);
         if (repData["error_code"] === "000000") {
           let replyData: CarModel[] = [];
           if (repData["result"] && repData["result"]["vehicleList"] && repData["result"]["vehicleList"].length > 0) {
@@ -124,24 +124,24 @@ export async function getCarModelByFrameNo(
             data: replyData
           });
         } else {
-          reject({ code: 400, msg: repData["error_code"] + ": " + repData["reason"] });
+          reject({ code: 400, message: repData["error_code"] + ": " + repData["reason"] });
         }
       });
       res.setTimeout(6000, () => {
         reject({
           code: 408,
-          msg: "智通接口超时"
+          message: "精友接口超时"
         });
       });
       res.on("error", (err) => {
-        logError(options, `sn: ${sn}, Error on getCarModelByFrameNo: ${err}`);
+        logError(options, `sn: ${sn}, Error on getCarModelByVin: ${err}`);
         reject({
           code: 500,
-          msg: err
+          message: err
         });
       });
     });
-    getCarModelByFrameNoReq.end(getCarModelByFrameNoPostData);
+    getCarModelByVinReq.end(getCarModelByVinPostData);
   });
 }
 
