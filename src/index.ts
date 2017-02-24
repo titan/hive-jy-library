@@ -10,22 +10,19 @@ export interface CarModel {
   vehicleName: string; // 车型名称
   brandName: string; // 品牌名称
   familyName: string; // 车系名称
-  groupName: string; // 车组名称
-  pl: string; // 排量
-  engineDesc: string; // 发动机描述
-  inairform: string; // 进气形式
-  arrayType?: string; // 气缸排列形式
-  valveNum?: string; // 气门数
-  fuelJetType?: string; // 燃油类型
-  supplyOil?: string; // 供油方式
-  drivenType?: string; // 驱动形式
-  gearboxName?: string; // 变速箱类型
-  gearNum?: string; // 变速器档数
   bodyType?: string; // 车身结构
-  doorNum?: string; // 门数
-  wheelbase?: string; // 轴距
-  yearPattern?: string; // 年款
+  engineDesc: string; // 发动机描述
+  gearboxName?: string; // 变速箱类型
+  groupName: string; // 车组名称
   cfgLevel?: string; // 配置级别
+  purchasePrice: string; // 新车购置价
+  purchasePriceTax: string; // 新车购置价含税
+  seat: string; // 座位
+  effluentStandard?: string; // 排放标准
+  pl: string; // 排量
+  fuelJetType?: string; // 燃油类型
+  drivenType?: string; // 驱动形式
+  yearPattern?: string; // 年款
 }
 
 // options
@@ -99,22 +96,19 @@ export async function getCarModelByVin(
                 vehicleName: data["vehicleName"],
                 brandName: data["brandName"],
                 familyName: data["familyName"],
-                groupName: data["groupName"],
-                pl: data["pl"],
-                engineDesc: data["engineDesc"],
-                inairform: data["inairform"],
-                arrayType: data["arrayType"],
-                valveNum: data["valveNum"],
-                fuelJetType: data["fuelJetType"],
-                supplyOil: data["supplyOil"],
-                drivenType: data["drivenType"],
-                gearboxName: data["gearboxName"],
-                gearNum: data["gearNum"],
                 bodyType: data["bodyType"],
-                doorNum: data["doorNum"],
-                wheelbase: data["wheelbase"],
-                yearPattern: data["yearPattern"],
-                cfgLevel: data["cfgLevel"]
+                engineDesc: data["engineDesc"],
+                gearboxName: data["gearboxName"],
+                groupName: data["groupName"],
+                cfgLevel: data["cfgLevel"],
+                purchasePrice: data["purchasePrice"],
+                purchasePriceTax: data["purchasePriceTax"],
+                seat: data["seat"],
+                effluentStandard: data["effluentStandard"],
+                pl: data["pl"],
+                fuelJetType: data["fuelJetType"],
+                drivenType: data["drivenType"],
+                yearPattern: data["yearPattern"]
               };
               replyData.push(vehicle);
             }

@@ -75,22 +75,19 @@ function getCarModelByVin(vin, // 车架号(VIN)
                                     vehicleName: data["vehicleName"],
                                     brandName: data["brandName"],
                                     familyName: data["familyName"],
-                                    groupName: data["groupName"],
-                                    pl: data["pl"],
-                                    engineDesc: data["engineDesc"],
-                                    inairform: data["inairform"],
-                                    arrayType: data["arrayType"],
-                                    valveNum: data["valveNum"],
-                                    fuelJetType: data["fuelJetType"],
-                                    supplyOil: data["supplyOil"],
-                                    drivenType: data["drivenType"],
-                                    gearboxName: data["gearboxName"],
-                                    gearNum: data["gearNum"],
                                     bodyType: data["bodyType"],
-                                    doorNum: data["doorNum"],
-                                    wheelbase: data["wheelbase"],
-                                    yearPattern: data["yearPattern"],
-                                    cfgLevel: data["cfgLevel"]
+                                    engineDesc: data["engineDesc"],
+                                    gearboxName: data["gearboxName"],
+                                    groupName: data["groupName"],
+                                    cfgLevel: data["cfgLevel"],
+                                    purchasePrice: data["purchasePrice"],
+                                    purchasePriceTax: data["purchasePriceTax"],
+                                    seat: data["seat"],
+                                    effluentStandard: data["effluentStandard"],
+                                    pl: data["pl"],
+                                    fuelJetType: data["fuelJetType"],
+                                    drivenType: data["drivenType"],
+                                    yearPattern: data["yearPattern"]
                                 };
                                 replyData.push(vehicle);
                             }
@@ -107,7 +104,7 @@ function getCarModelByVin(vin, // 车架号(VIN)
                 res.setTimeout(6000, () => {
                     reject({
                         code: 408,
-                        message: "智通接口超时"
+                        message: "精友接口超时"
                     });
                 });
                 res.on("error", (err) => {
