@@ -4,24 +4,22 @@ export interface CarModel {
     vehicleName: string;
     brandName: string;
     familyName: string;
-    groupName: string;
-    pl: string;
-    engineDesc: string;
-    inairform: string;
-    arrayType?: string;
-    valveNum?: string;
-    fuelJetType?: string;
-    supplyOil?: string;
-    drivenType?: string;
-    gearboxName?: string;
-    gearNum?: string;
     bodyType?: string;
-    doorNum?: string;
-    wheelbase?: string;
-    yearPattern?: string;
+    engineDesc: string;
+    gearboxName?: string;
+    groupName: string;
     cfgLevel?: string;
+    purchasePrice: string;
+    purchasePriceTax: string;
+    seat: string;
+    effluentStandard?: string;
+    pl: string;
+    fuelJetType?: string;
+    drivenType?: string;
+    yearPattern?: string;
 }
 export interface Option {
-    log: Logger;
+    log?: Logger;
+    sn?: string;
 }
 export declare function getCarModelByVin(vin: string, options?: Option): Promise<any>;
