@@ -27,7 +27,8 @@ export interface CarModel {
 
 // options
 export interface Option {
-  log: Logger; // 日志输出
+  log?: Logger; // 日志输出
+  sn?: string; // sn 码
 }
 
 // 查询车型信息
@@ -35,7 +36,7 @@ export async function getCarModelByVin(
   vin: string, // 车架号(VIN)
   options?: Option // 可选参数
 ): Promise<any> {
-  const sn = crypto.randomBytes(64).toString("base64");
+  const sn = options.sn;
   logInfo(options, `sn: ${sn}, getCarModelByVin => RequestTime: ${new Date()}, requestData: { vin: ${vin} }`);
   if (!verify([
     stringVerifier("vin", vin),
@@ -76,16 +77,14 @@ export async function getCarModelByVin(
       }
     };
     const getCarModelByVinReq = http.request(getCarModelByVinOptions, function (res) {
-      logInfo(options, `sn: ${sn}, getCarModelByVin => getCarModelByVinReq status: ${res.statusCode}`);
       res.setEncoding("utf8");
       let getCarModelByVinResult: string = "";
       res.on("data", (body) => {
         getCarModelByVinResult += body;
       });
       res.on("end", () => {
-        logInfo(options, `sn: ${sn}, getCarModelByVin => End of getCarModelByVinReq`);
         const repData = JSON.parse(getCarModelByVinResult);
-        logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${JSON.stringify(getCarModelByVinResult)}`);
+        logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${getCarModelByVinResult}`);
         if (repData["error_code"] === "000000") {
           let replyData: CarModel[] = [];
           if (repData["result"] && repData["result"]["vehicleList"] && repData["result"]["vehicleList"].length > 0) {

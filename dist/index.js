@@ -7,15 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const http = require("http");
 const hive_verify_1 = require("hive-verify");
-const crypto = require("crypto");
 // 查询车型信息
 function getCarModelByVin(vin, // 车架号(VIN)
     options // 可选参数
 ) {
     return __awaiter(this, void 0, void 0, function* () {
-        const sn = crypto.randomBytes(64).toString("base64");
+        const sn = options.sn;
         logInfo(options, `sn: ${sn}, getCarModelByVin => RequestTime: ${new Date()}, requestData: { vin: ${vin} }`);
         if (!hive_verify_1.verify([
             hive_verify_1.stringVerifier("vin", vin),
@@ -25,6 +25,7 @@ function getCarModelByVin(vin, // 车架号(VIN)
                 message: errors.join("\n")
             });
         })) {
+            // return;
         }
         return new Promise((resolve, reject) => {
             const getCarModelByVinTimeString = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
@@ -55,16 +56,14 @@ function getCarModelByVin(vin, // 车架号(VIN)
                 }
             };
             const getCarModelByVinReq = http.request(getCarModelByVinOptions, function (res) {
-                logInfo(options, `sn: ${sn}, getCarModelByVin => getCarModelByVinReq status: ${res.statusCode}`);
                 res.setEncoding("utf8");
                 let getCarModelByVinResult = "";
                 res.on("data", (body) => {
                     getCarModelByVinResult += body;
                 });
                 res.on("end", () => {
-                    logInfo(options, `sn: ${sn}, getCarModelByVin => End of getCarModelByVinReq`);
                     const repData = JSON.parse(getCarModelByVinResult);
-                    logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${JSON.stringify(getCarModelByVinResult)}`);
+                    logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${getCarModelByVinResult}`);
                     if (repData["error_code"] === "000000") {
                         let replyData = [];
                         if (repData["result"] && repData["result"]["vehicleList"] && repData["result"]["vehicleList"].length > 0) {

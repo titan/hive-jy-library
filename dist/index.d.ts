@@ -19,6 +19,7 @@ export interface CarModel {
     yearPattern?: string;
 }
 export interface Option {
-    log: Logger;
+    log?: Logger;
+    sn?: string;
 }
 export declare function getCarModelByVin(vin: string, options?: Option): Promise<any>;
