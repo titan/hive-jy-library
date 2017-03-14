@@ -117,7 +117,7 @@ export async function getCarModelByVin(
             data: replyData
           });
         } else {
-          reject({ code: 400, message: repData["error_code"] + ": " + repData["reason"] });
+          reject({ code: 400, message: getCarModelByVinResult });
         }
       });
       res.setTimeout(6000, () => {

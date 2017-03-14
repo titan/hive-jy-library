@@ -88,7 +88,7 @@ async function getCarModelByVin(vin, // 车架号(VIN)
                     });
                 }
                 else {
-                    reject({ code: 400, message: repData["error_code"] + ": " + repData["reason"] });
+                    reject({ code: 400, message: getCarModelByVinResult });
                 }
             });
             res.setTimeout(6000, () => {
