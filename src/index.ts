@@ -111,6 +111,12 @@ export async function getCarModelByVin(
               };
               replyData.push(vehicle);
             }
+          } else {
+            // 从目前精友的返回报文来看,不会出现此情况
+            reject({
+              code: 404,
+              msg: getCarModelByVinResult
+            });
           }
           resolve({
             code: 200,
