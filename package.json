@@ -14,6 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/bunyan": "0.0.34",
-    "hive-verify": "git+http://git.fengchaohuzhu.com:10080/feiluo/hive-verify.git"
+    "hive-verify": "git+ssh://git@git.fengchaohuzhu.com:10022/server/hive-verify.git"
   }
 }
