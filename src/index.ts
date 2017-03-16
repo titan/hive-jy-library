@@ -38,15 +38,15 @@ export async function getCarModelByVin(
 ): Promise<any> {
   const sn = options.sn;
   logInfo(options, `sn: ${sn}, getCarModelByVin => RequestTime: ${new Date()}, requestData: { vin: ${vin} }`);
-  if (!verify([
-    stringVerifier("vin", vin),
-  ], (errors: string[]) => {
-    return Promise.reject({
-      code: 403,
-      message: errors.join("\n")
-    });
-  })) {
-    // return;
+  try {
+    verify([
+      stringVerifier("vin", vin),
+    ]);
+  } catch (err) {
+    return {
+      code: 410,
+      message: err.message
+    };
   }
   return new Promise((resolve, reject) => {
     const getCarModelByVinTimeString: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
