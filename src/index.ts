@@ -39,7 +39,7 @@ export async function getCarModelByVin(
   const sn = options.sn;
   logInfo(options, `sn: ${sn}, getCarModelByVin => RequestTime: ${new Date()}, requestData: { vin: ${vin} }`);
   try {
-    verify([
+    await verify([
       stringVerifier("vin", vin),
     ]);
   } catch (err) {
