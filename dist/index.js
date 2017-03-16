@@ -8,15 +8,16 @@ async function getCarModelByVin(vin, // 车架号(VIN)
 ) {
     const sn = options.sn;
     logInfo(options, `sn: ${sn}, getCarModelByVin => RequestTime: ${new Date()}, requestData: { vin: ${vin} }`);
-    if (!hive_verify_1.verify([
-        hive_verify_1.stringVerifier("vin", vin),
-    ], (errors) => {
-        return Promise.reject({
-            code: 403,
-            message: errors.join("\n")
-        });
-    })) {
-        // return;
+    try {
+        await hive_verify_1.verify([
+            hive_verify_1.stringVerifier("vin", vin),
+        ]);
+    }
+    catch (err) {
+        return {
+            code: 410,
+            message: err.message
+        };
     }
     return new Promise((resolve, reject) => {
         const getCarModelByVinTimeString = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
