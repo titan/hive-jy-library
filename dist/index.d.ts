@@ -1,4 +1,5 @@
 import { Logger } from "bunyan";
+import { Disq } from "hive-disque";
 export interface CarModel {
     vehicleCode: string;
     vehicleName: string;
@@ -21,5 +22,7 @@ export interface CarModel {
 export interface Option {
     log?: Logger;
     sn?: string;
+    disque?: Disq;
+    queue?: string;
 }
 export declare function getCarModelByVin(vin: string, options?: Option): Promise<any>;

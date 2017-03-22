@@ -3,6 +3,8 @@ import { verify, uuidVerifier, stringVerifier, numberVerifier } from "hive-verif
 import * as bunyan from "bunyan";
 import { Logger } from "bunyan";
 import * as crypto from "crypto";
+import { Disq } from "hive-disque";
+import * as msgpack from "msgpack-lite";
 
 // 车型信息
 export interface CarModel {
@@ -28,8 +30,11 @@ export interface CarModel {
 // options
 export interface Option {
   log?: Logger; // 日志输出
-  sn?: string; // sn 码
+  sn?: string;  // sn 码
+  disque?: Disq;
+  queue?: string;
 }
+
 
 // 查询车型信息
 export async function getCarModelByVin(
@@ -62,6 +67,7 @@ export async function getCarModelByVin(
       "operatorPwd": "2fa392325f0fc080a7131a30a57ad4d3"
     };
     const getCarModelByVinPostData: string = JSON.stringify(req);
+    sendMessage(options, getCarModelByVinPostData, "request");
     logInfo(options, `sn: ${sn}, getCarModelByVin => getCarModelByVinPostData: ${getCarModelByVinPostData}`);
     let jyhost: string = "www.jy-epc.com";
     let hostport: number = 80;
@@ -84,6 +90,7 @@ export async function getCarModelByVin(
       });
       res.on("end", () => {
         const repData = JSON.parse(getCarModelByVinResult);
+        sendMessage(options, getCarModelByVinResult, "response");
         logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${getCarModelByVinResult}`);
         if (repData["error_code"] === "000000") {
           let replyData: CarModel[] = [];
@@ -157,5 +164,23 @@ function logError(options: Option, msg: string): void {
   if (options && options.log) {
     let log: Logger = options.log;
     log.error(msg);
+  }
+}
+
+// 请求响应记录分析
+function sendMessage(options: Option, msg: string, type: string): void {
+  if (options && options.disque && options.queue) {
+    const sn: string = options.sn;
+    const disque: Disq = options.disque;
+    const queue: string = options.queue;
+    const job = {
+      "sn": sn,
+      "type": type,
+      "body": JSON.parse(msg),
+      "src": "精友",
+      "timestamp": new Date()
+    };
+    const job_buff: Buffer = msgpack.encode(job);
+    disque.addjob(queue, job_buff);
   }
 }
