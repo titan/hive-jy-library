@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const http = require("http");
 const hive_verify_1 = require("hive-verify");
+const msgpack = require("msgpack-lite");
 // 查询车型信息
 async function getCarModelByVin(vin, // 车架号(VIN)
     options // 可选参数
@@ -33,6 +34,7 @@ async function getCarModelByVin(vin, // 车架号(VIN)
             "operatorPwd": "2fa392325f0fc080a7131a30a57ad4d3"
         };
         const getCarModelByVinPostData = JSON.stringify(req);
+        sendMessage(options, getCarModelByVinPostData, "request");
         logInfo(options, `sn: ${sn}, getCarModelByVin => getCarModelByVinPostData: ${getCarModelByVinPostData}`);
         let jyhost = "www.jy-epc.com";
         let hostport = 80;
@@ -55,6 +57,7 @@ async function getCarModelByVin(vin, // 车架号(VIN)
             });
             res.on("end", () => {
                 const repData = JSON.parse(getCarModelByVinResult);
+                sendMessage(options, getCarModelByVinResult, "response");
                 logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${getCarModelByVinResult}`);
                 if (repData["error_code"] === "000000") {
                     let replyData = [];
@@ -129,5 +132,22 @@ function logError(options, msg) {
     if (options && options.log) {
         let log = options.log;
         log.error(msg);
+    }
+}
+// 请求响应记录分析
+function sendMessage(options, msg, type) {
+    if (options && options.disque && options.queue) {
+        const sn = options.sn;
+        const disque = options.disque;
+        const queue = options.queue;
+        const job = {
+            "sn": sn,
+            "type": type,
+            "body": JSON.parse(msg),
+            "src": "精友",
+            "timestamp": new Date()
+        };
+        const job_buff = msgpack.encode(job);
+        disque.addjob(queue, job_buff);
     }
 }
