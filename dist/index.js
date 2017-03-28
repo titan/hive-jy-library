@@ -2,12 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const http = require("http");
 const hive_verify_1 = require("hive-verify");
+const crypto = require("crypto");
 const msgpack = require("msgpack-lite");
 // 查询车型信息
 async function getCarModelByVin(vin, // 车架号(VIN)
     options // 可选参数
 ) {
     const sn = options.sn;
+    const unity = crypto.randomBytes(64).toString("base64");
     logInfo(options, `sn: ${sn}, getCarModelByVin => RequestTime: ${new Date()}, requestData: { vin: ${vin} }`);
     try {
         await hive_verify_1.verify([
@@ -34,7 +36,7 @@ async function getCarModelByVin(vin, // 车架号(VIN)
             "operatorPwd": "2fa392325f0fc080a7131a30a57ad4d3"
         };
         const getCarModelByVinPostData = JSON.stringify(req);
-        sendMessage(options, getCarModelByVinPostData, "request");
+        sendMessage(options, getCarModelByVinPostData, "request", unity);
         logInfo(options, `sn: ${sn}, getCarModelByVin => getCarModelByVinPostData: ${getCarModelByVinPostData}`);
         let jyhost = "www.jy-epc.com";
         let hostport = 80;
@@ -57,7 +59,7 @@ async function getCarModelByVin(vin, // 车架号(VIN)
             });
             res.on("end", () => {
                 const repData = JSON.parse(getCarModelByVinResult);
-                sendMessage(options, getCarModelByVinResult, "response");
+                sendMessage(options, getCarModelByVinResult, "response", unity);
                 logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${getCarModelByVinResult}`);
                 if (repData["error_code"] === "000000") {
                     let replyData = [];
@@ -135,19 +137,22 @@ function logError(options, msg) {
     }
 }
 // 请求响应记录分析
-function sendMessage(options, msg, type) {
+function sendMessage(options, msg, type, unity) {
     if (options && options.disque && options.queue) {
         const sn = options.sn;
         const disque = options.disque;
         const queue = options.queue;
         const job = {
             "sn": sn,
+            "unity": unity,
             "type": type,
             "body": JSON.parse(msg),
             "src": "精友",
             "timestamp": new Date()
         };
         const job_buff = msgpack.encode(job);
-        disque.addjob(queue, job_buff);
+        disque.addjob(queue, job_buff, () => { }, (e) => {
+            logError(options, e.message);
+        });
     }
 }

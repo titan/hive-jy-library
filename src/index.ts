@@ -42,6 +42,7 @@ export async function getCarModelByVin(
   options?: Option // 可选参数
 ): Promise<any> {
   const sn = options.sn;
+  const unity: string = crypto.randomBytes(64).toString("base64");
   logInfo(options, `sn: ${sn}, getCarModelByVin => RequestTime: ${new Date()}, requestData: { vin: ${vin} }`);
   try {
     await verify([
@@ -67,7 +68,7 @@ export async function getCarModelByVin(
       "operatorPwd": "2fa392325f0fc080a7131a30a57ad4d3"
     };
     const getCarModelByVinPostData: string = JSON.stringify(req);
-    sendMessage(options, getCarModelByVinPostData, "request");
+    sendMessage(options, getCarModelByVinPostData, "request", unity);
     logInfo(options, `sn: ${sn}, getCarModelByVin => getCarModelByVinPostData: ${getCarModelByVinPostData}`);
     let jyhost: string = "www.jy-epc.com";
     let hostport: number = 80;
@@ -90,7 +91,7 @@ export async function getCarModelByVin(
       });
       res.on("end", () => {
         const repData = JSON.parse(getCarModelByVinResult);
-        sendMessage(options, getCarModelByVinResult, "response");
+        sendMessage(options, getCarModelByVinResult, "response", unity);
         logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${getCarModelByVinResult}`);
         if (repData["error_code"] === "000000") {
           let replyData: CarModel[] = [];
@@ -168,19 +169,23 @@ function logError(options: Option, msg: string): void {
 }
 
 // 请求响应记录分析
-function sendMessage(options: Option, msg: string, type: string): void {
+function sendMessage(options: Option, msg: string, type: string, unity: string): void {
   if (options && options.disque && options.queue) {
     const sn: string = options.sn;
     const disque: Disq = options.disque;
     const queue: string = options.queue;
     const job = {
       "sn": sn,
+      "unity": unity,
       "type": type,
       "body": JSON.parse(msg),
       "src": "精友",
       "timestamp": new Date()
     };
     const job_buff: Buffer = msgpack.encode(job);
-    disque.addjob(queue, job_buff);
+    disque.addjob(queue, job_buff, () => {},
+                 (e: Error) => {
+      logError(options, e.message);
+    });
   }
 }
