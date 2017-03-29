@@ -68,7 +68,7 @@ export async function getCarModelByVin(
       "operatorPwd": "2fa392325f0fc080a7131a30a57ad4d3"
     };
     const getCarModelByVinPostData: string = JSON.stringify(req);
-    sendMessage(options, getCarModelByVinPostData, "request", unity);
+    sendMessage(options, getCarModelByVinPostData, "request", unity, vin);
     logInfo(options, `sn: ${sn}, getCarModelByVin => getCarModelByVinPostData: ${getCarModelByVinPostData}`);
     let jyhost: string = "www.jy-epc.com";
     let hostport: number = 80;
@@ -91,7 +91,7 @@ export async function getCarModelByVin(
       });
       res.on("end", () => {
         const repData = JSON.parse(getCarModelByVinResult);
-        sendMessage(options, getCarModelByVinResult, "response", unity);
+        sendMessage(options, getCarModelByVinResult, "response", unity, vin);
         logInfo(options, `sn: ${sn}, getCarModelByVin => ReplyTime: ${new Date()} , getCarModelByVinResult: ${getCarModelByVinResult}`);
         if (repData["error_code"] === "000000") {
           let replyData: CarModel[] = [];
@@ -169,7 +169,7 @@ function logError(options: Option, msg: string): void {
 }
 
 // 请求响应记录分析
-function sendMessage(options: Option, msg: string, type: string, unity: string): void {
+function sendMessage(options: Option, msg: string, type: string, unity: string, args: string): void {
   if (options && options.disque && options.queue) {
     const sn: string = options.sn;
     const disque: Disq = options.disque;
@@ -179,6 +179,7 @@ function sendMessage(options: Option, msg: string, type: string, unity: string):
       "unity": unity,
       "type": type,
       "body": JSON.parse(msg),
+      "args": args,
       "src": "精友",
       "timestamp": new Date()
     };
