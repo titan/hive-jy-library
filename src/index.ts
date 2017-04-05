@@ -174,19 +174,42 @@ function sendMessage(options: Option, msg: string, type: string, unity: string, 
     const sn: string = options.sn;
     const disque: Disq = options.disque;
     const queue: string = options.queue;
-    const job = {
-      "sn": sn,
-      "unity": unity,
-      "type": type,
-      "body": JSON.parse(msg),
-      "args": args,
-      "src": "精友",
-      "timestamp": new Date()
-    };
+    let job = null;
+    if (type === "request") {
+      job = {
+        "sn": sn,
+        "unity": unity,
+        "type": type,
+        "body": JSON.parse(msg),
+        "args": args,
+        "src": "精友",
+        "timestamp": new Date()
+      };
+    } else {
+      job = {
+        "sn": sn,
+        "unity": unity,
+        "type": type,
+        "body": JSON.parse(msg),
+        "args": args,
+        "src": "精友",
+        "timestamp": new Date(),
+        "state": decorateMessage(msg)
+      };
+    }
     const job_buff: Buffer = msgpack.encode(job);
     disque.addjob(queue, job_buff, () => {},
                  (e: Error) => {
       logError(options, e.message);
     });
+  }
+}
+
+function decorateMessage(msg: string) {
+  const replyData: Object = JSON.parse(msg);
+  if (replyData["error_code"] === "000000") {
+    return "成功";
+  } else {
+    return "失败";
   }
 }
