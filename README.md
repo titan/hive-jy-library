@@ -20,6 +20,7 @@ jy-library 是对精友接口的二次封装, 供相应的后端模块调用。�
 1. 2017-04-07
   * 增加 CarModel, Option 数据结构 
   * 增加 getcarmodelbyvin 接口
+  * 修改 CarModel 数据结构
 
 # Data Structure
 
@@ -27,21 +28,23 @@ jy-library 是对精友接口的二次封装, 供相应的后端模块调用。�
 
 | name              | type    | note                       |
 | ----              | ----    | ----                       |
-| vehicleFgwCode                | string  | 发改委编码                 |
-| vehicleFgwName            | string  | 发改委名称       |
-| parentVehName          | string  | 年份款型         |
-| modelCode          | string  | 品牌型号编码         |
-| brandName             | string  | 品牌型号名称                      |
-| engineDesc                | string  | 排量                 |
-| familyName            | string  | 车系名称       |
-| gearboxType          | string  | 车档型号         |
-| remark          | string  | 备注         |
-| newCarPrice             | string  | 新车购置价                      |
-| purchasePriceTax                | string  | 含税价格                 |
-| importFlag            | string  | 进口标识       |
-| purchasePrice          | string  | 参考价         |
-| seatCount          | string  | 座位数         |
-| standardName             | string  | 款型名称                      |
+| vehicleCode                | string  | 车型代码，唯一标识                 |
+| vehicleName            | string  | 车型名称       |
+| brandName          | string  | 品牌名称           |
+| familyName          | string  | 车系名称         |
+| bodyType?             | string  | 车身结构                      |
+| engineDesc                | string  | 发动机描述                 |
+| gearboxName?            | string  | 变速箱类型       |
+| groupName          | string  | 车组名称         |
+| cfgLevel?          | string  | 配置级别           |
+| purchasePrice             | string  | 新车购置价                      |
+| purchasePriceTax                | string  | 新车购置价含税                 |
+| seat            | string  | 座位       |
+| effluentStandard?          | string  | 排放标准         |
+| pl          | string  | 排量         |
+| fuelJetType?             | string  | 燃油类型                      |
+| drivenType?             | string  | 驱动形式                      |
+| yearPattern?             | string  | 年款                      |
 
 ## Option
 
