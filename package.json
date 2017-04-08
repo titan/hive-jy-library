@@ -7,14 +7,14 @@
   "readmeFilename": "README.md",
   "repository": {
     "type": "git",
-    "url": "ssh://git@git.fengchaohuzhu.com:10080/server/jy-library"
+    "url": "ssh://git@192.168.1.190:10022/server/jy-library"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hive-verify": "git+ssh://git@git.fengchaohuzhu.com:10022/server/hive-verify.git",
-    "hive-disque": "git+ssh://git@git.fengchaohuzhu.com:10022/server/hive-disque.git",
+    "hive-verify": "git+ssh://git@192.168.1.190:10022/server/hive-verify.git",
+    "hive-disque": "git+ssh://git@192.168.1.190:10022/server/hive-disque.git",
     "msgpack-lite": "^0.1.20"
   },
   "devDependencies": {
